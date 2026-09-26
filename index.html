@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Majorque · 6–13 octobre 2026</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --terra:#B4532A; --terra-d:#7A2A12; --terra-l:#F3D3BF; --terra-xl:#FBEDE4;
+  --ink:#24211E; --mut:#6F6860; --line:#E7E2DB; --bg:#FCFBF9; --card:#FFFFFF;
+  --sea:#2C6E8A; --gold:#C98A12;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--terra)}
+:focus-visible{outline:2px solid var(--terra);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* ---------- Hero ---------- */
+header.hero{padding:44px 0 18px}
+.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.02;font-weight:700;letter-spacing:-.02em;margin:0}
+.hero h1 span{display:block;font-weight:300;color:var(--terra)}
+.hero p.lede{max-width:62ch;color:var(--mut);margin:16px 0 0;font-size:15.5px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:18px;font-size:13.5px}
+.facts b{font-weight:600}
+
+/* ---------- Nav ---------- */
+nav.days{position:sticky;top:0;z-index:1000;background:rgba(252,251,249,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+nav.days .wrap{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
+nav.days .wrap::-webkit-scrollbar{display:none}
+nav.days a{flex:none;text-decoration:none;color:var(--ink);font-size:13px;font-weight:500;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);white-space:nowrap}
+nav.days a:hover{border-color:var(--terra)}
+nav.days a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+nav.days .sp{flex:1 0 12px}
+#selBtn{flex:none;font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;border:0;background:var(--terra);color:#fff;cursor:pointer;white-space:nowrap}
+
+/* ---------- Overview ---------- */
+section.block{padding:34px 0 10px}
+h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+.sub{color:var(--mut);font-size:13.5px;margin:0 0 16px}
+#overview-map{height:min(72vh,620px);border-radius:14px;border:1px solid var(--line);background:#dfe9ee}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.legend a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink);font-size:13px;padding:5px 11px 5px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.25)}
+.must{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2px 28px;margin:22px 0 0;padding:0;list-style:none}
+.must li{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.must li i{width:9px;height:9px;border-radius:50%;flex:none;transform:translateY(-1px)}
+.must small{color:var(--mut);display:block;font-size:12.5px}
+
+/* ---------- Practical ---------- */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.panel h3{margin:0 0 10px;font-size:16px;font-weight:600}
+.panel.cbd{border-color:#9CC8A8;background:#F4FAF5}
+.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--terra-l);margin-left:6px}
+.timeline li{position:relative;padding:0 0 12px 16px;font-size:14px}
+.timeline li::before{content:"";position:absolute;left:-6px;top:7px;width:10px;height:10px;border-radius:50%;background:var(--terra)}
+.timeline b{display:block;font-weight:600;font-size:13px;color:var(--terra-d)}
+.checks{list-style:none;margin:0;padding:0}
+.checks li{border-bottom:1px solid var(--line)}
+.checks li:last-child{border-bottom:0}
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:14px}
+.checks input{accent-color:var(--terra);width:17px;height:17px;margin-top:2px;flex:none}
+.checks input:checked+span{color:var(--mut);text-decoration:line-through}
+.checks small{display:block;color:var(--mut);font-size:12.5px;text-decoration:none}
+.flag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:5px;background:#FFF1D6;color:#8A5A00;margin-left:4px}
+.flag.ok{background:#E3F3E7;color:#1E6B34}
+ol.rank{margin:0;padding-left:20px;font-size:14px}
+ol.rank li{padding:4px 0}
+ol.rank small{color:var(--mut)}
+
+/* ---------- Day ---------- */
+section.day{padding:42px 0 18px;border-top:1px solid var(--line);margin-top:26px}
+.dayhead{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+.daynum{font-size:clamp(54px,9vw,88px);line-height:.82;font-weight:700;color:var(--terra);letter-spacing:-.04em}
+.dayhead h2{font-size:clamp(21px,3vw,28px);margin:0}
+.dayhead .date{color:var(--mut);font-size:14px;margin:0 0 2px}
+.drive{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;background:var(--terra-xl);border-radius:10px;padding:10px 14px;margin-bottom:18px}
+.drive b{font-weight:600}
+.daygrid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:22px;align-items:start}
+.mapbox{position:sticky;top:76px}
+.daymap{height:460px;border-radius:12px;border:1px solid var(--line);background:#e6ecee}
+.mapnote{font-size:12px;color:var(--mut);margin:6px 2px 0}
+@media (max-width:860px){.daygrid{grid-template-columns:1fr}.mapbox{position:static}.daymap{height:340px}}
+
+.group{margin:0 0 18px}
+.group h4{margin:0 0 6px;font-size:13px;font-weight:600;color:var(--terra-d)}
+.act{display:grid;grid-template-columns:28px 1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.act.dim{display:none}
+.act input{accent-color:var(--terra);width:19px;height:19px;margin:3px 0 0;cursor:pointer}
+.act .top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.act .name{font-weight:600;font-size:15px;cursor:pointer}
+.act .name:hover{color:var(--terra)}
+.act .type{font-size:12px;color:var(--mut)}
+.act .snk{font-size:11.5px;font-weight:600;color:var(--sea);background:#E6F1F5;border-radius:5px;padding:1px 7px}
+.act p{margin:3px 0 6px;font-size:13.5px;color:#4B4640;max-width:62ch}
+.act .meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--mut)}
+.act .meta a{text-decoration:none;font-weight:500}
+.act .meta a:hover{text-decoration:underline}
+.stars{font-size:15px;letter-spacing:1px;white-space:nowrap;color:var(--gold);text-align:right}
+.stars .h{background:linear-gradient(90deg,var(--gold) 50%,#DDD5CB 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stars .e{color:#DDD5CB}
+.act.picked{background:linear-gradient(90deg,var(--terra-xl),transparent 70%)}
+
+.filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 0;font-size:13.5px}
+.toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+.toggle input{accent-color:var(--terra)}
+
+/* ---------- Map bits ---------- */
+.pin{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);font-family:Poppins,sans-serif}
+.pin.home{background:var(--ink);border-radius:7px;font-size:13px}
+.dot{width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+.leg{display:inline-block;background:#fff;color:var(--terra-d);border:1.5px solid var(--terra);border-radius:999px;font:600 11px/1 Poppins,sans-serif;padding:4px 7px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.2);transform:translate(-50%,-50%)}
+.town{font:italic 600 11px/1 Poppins,sans-serif;color:#5b5147;text-shadow:0 0 3px #fff,0 0 3px #fff;white-space:nowrap;transform:translate(-50%,-50%)}
+.leaflet-container{font-family:Poppins,sans-serif}
+.leaflet-popup-content{font-size:13px;margin:10px 14px}
+.leaflet-popup-content b{font-weight:600}
+
+/* ---------- Drawer ---------- */
+#drawer{position:fixed;inset:0;z-index:2000;display:none}
+#drawer.open{display:block}
+#drawer .shade{position:absolute;inset:0;background:rgba(36,33,30,.35)}
+#drawer .sheet{position:absolute;right:0;top:0;bottom:0;width:min(440px,100%);background:var(--bg);padding:calc(22px + env(safe-area-inset-top,0px)) 22px calc(22px + env(safe-area-inset-bottom,0px));overflow-y:auto;box-shadow:-6px 0 24px rgba(0,0,0,.12)}
+#drawer h3{margin:0 0 4px;font-size:20px}
+#drawer .dday{margin:18px 0 6px;font-weight:600;color:var(--terra-d);font-size:14px}
+#drawer ul{margin:0;padding-left:18px;font-size:14px}
+#drawer .row{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.btn{font:inherit;font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;color:var(--ink)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+footer{padding:40px 0 60px;color:var(--mut);font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header class="hero wrap">
+  <h1>Majorque<span>6 → 13 octobre 2026</span></h1>
+  <p class="lede">Une semaine en deux bases : la Tramuntana depuis Sóller, puis les criques du sud depuis Santanyí. Chaque journée est un menu d'options notées. Coche ce que tu gardes, ta sélection est retenue sur cet appareil.</p>
+  <div class="facts">
+    <div><b>Base 1</b> Sóller, nuits 1 à 4</div>
+    <div><b>Base 2</b> Santanyí, nuits 5 à 7</div>
+    <div><b>Aller</b> VY6942 Orly → Palma, 20h25</div>
+    <div><b>Voiture</b> TopGear, Clio, franchise 0 €</div>
+  </div>
+</header>
+
+<nav class="days" aria-label="Navigation">
+  <div class="wrap" id="navwrap">
+    <a href="#apercu">Aperçu</a>
+    <a href="#pratique">Pratique</a>
+    <span class="sp"></span>
+    <button id="selBtn" type="button">Ma sélection (0)</button>
+  </div>
+</nav>
+
+<main>
+<section class="block wrap" id="apercu">
+  <h2>La semaine sur la carte</h2>
+  <p class="sub">Un point par activité, une couleur par jour. Les carrés noirs sont vos deux logements. Touche un jour dans la légende pour y aller.</p>
+  <div id="overview-map" role="region" aria-label="Carte d'ensemble"></div>
+  <div class="legend" id="legend"></div>
+  <ul class="must" id="must"></ul>
+</section>
+
+<section class="block wrap" id="pratique">
+  <h2>Pratique</h2>
+  <p class="sub">Horaires clés, CBD, réservations à faire et sac à préparer.</p>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Arrivée · mardi 6</h3>
+      <ul class="timeline">
+        <li><b>20h25</b>Atterrissage Palma (VY6942).</li>
+        <li><b>~22h00</b>Prise de la Clio chez TopGear Mobility (créneau réservé ~22h).</li>
+        <li><b>~22h15</b>The Green Ape, Can Pastilla, à 8 min. Adhésion ~20 € en espèces.</li>
+        <li><b>~23h15</b>Arrivée à Sóller (~40 min). Check-in autonome, prévoir de quoi grignoter.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Départ · mardi 13</h3>
+      <ul class="timeline">
+        <li><b>Matin</b>Dernière baignade près de Santanyí (Cala Llombards, Caló des Moro).</li>
+        <li><b>~13h15</b>Quitter Santanyí, faire le plein en route (~50 min).</li>
+        <li><b>14h30</b>Rendu de la voiture (réservé).</li>
+        <li><b>15h45</b>Vol retour. À revérifier : le créneau entre rendu et vol est serré.</li>
+      </ul>
+    </div>
+    <div class="panel cbd">
+      <h3>CBD : The Green Ape</h3>
+      <p style="margin:0 0 8px;font-size:14px">Carrer de Virgili 17, Can Pastilla. Ouvert tous les jours jusqu'à 1h. Social club : adhésion annuelle ~20 €, uniquement en espèces.</p>
+      <p style="margin:0;font-size:13px;color:var(--mut)">À consommer sur place pendant le séjour, rien dans les bagages au retour.</p>
+      <p style="margin:10px 0 0;font-size:13px"><a href="https://www.google.com/maps/dir/?api=1&destination=39.5354,2.7159" target="_blank" rel="noopener">Itinéraire depuis l'aéroport</a></p>
+    </div>
+    <div class="panel">
+      <h3>À réserver</h3>
+      <ul class="checks" data-store="book">
+        <li><label><input type="checkbox" data-k="vol"><span>Vols aller et retour <span class="flag ok">fait</span></span></label></li>
+        <li><label><input type="checkbox" data-k="car"><span>Voiture TopGear via Discover Cars <span class="flag ok">fait</span><small>« Réserver sans couverture » : la franchise est déjà à 0 €.</small></span></label></li>
+        <li><label><input type="checkbox" data-k="airbnb"><span>Airbnb Sóller (4 nuits) et Santanyí (3 nuits)<small>Vérifier le check-in autonome pour une arrivée vers 23h.</small></span></label></li>
+        <li><label><input type="checkbox" data-k="balloon"><span>Montgolfière dimanche 11 <span class="flag">opérateur à trouver</span><small>Mallorca Balloons ne vole que du mardi au samedi : il faut un opérateur qui vole le dimanche.</small></span></label></li>
+        <li><label><input type="checkbox" data-k="kayakN"><span>Kayak guidé Port de Sóller (J3) si choisi<small>Groupe de 6 minimum, ~75 €/pers.</small></span></label></li>
+        <li><label><input type="checkbox" data-k="kayakS"><span>Kayak Cala Varques (J7) si choisi</span></label></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Dans le sac</h3>
+      <ul class="checks" data-store="pack">
+        <li><label><input type="checkbox" data-k="mask"><span>Masques, tubas, chaussures d'eau</span></label></li>
+        <li><label><input type="checkbox" data-k="fins"><span>Palmes courtes <span class="flag">à acheter</span><small>Utiles à Varques, Sa Nau, Caló des Moro et dans les grottes.</small></span></label></li>
+        <li><label><input type="checkbox" data-k="rash"><span>Lycra ou shorty fin<small>Eau à ~23–24 °C : confort pour les longues sessions.</small></span></label></li>
+        <li><label><input type="checkbox" data-k="insta"><span>Insta360 et caisson étanche</span></label></li>
+        <li><label><input type="checkbox" data-k="cash"><span>Espèces (adhésion Green Ape, parkings)</span></label></li>
+        <li><label><input type="checkbox" data-k="shoes"><span>Chaussures de rando (Biniaraix, Sa Calobra)</span></label></li>
+        <li><label><input type="checkbox" data-k="layer"><span>Petite laine pour l'aube en montgolfière et les soirées</span></label></li>
+        <li><label><input type="checkbox" data-k="docs"><span>Permis, carte bancaire, crème solaire</span></label></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Snorkeling, du meilleur au moins bon</h3>
+      <p style="margin:0 0 6px;font-size:13px;color:var(--mut)">Classé sur la vie sous-marine et la clarté, pas sur la beauté de la crique. Privilégier le matin.</p>
+      <p style="margin:8px 0 4px;font-weight:600;font-size:13.5px">Nord, depuis Sóller</p>
+      <ol class="rank">
+        <li>Cala Deià <small>la plus proche et la plus fiable (J2)</small></li>
+        <li>Cala Tuent <small>visibilité exceptionnelle par mer calme (J4)</small></li>
+        <li>Punta des Catius <small>accessible seulement en kayak (J3)</small></li>
+      </ol>
+      <p style="margin:12px 0 4px;font-weight:600;font-size:13.5px">Sud, depuis Santanyí</p>
+      <ol class="rank">
+        <li>Cala Varques <small>faune et grottes marines (J7)</small></li>
+        <li>Cala Llombards <small>le meilleur depuis le bord (J6)</small></li>
+        <li>Cala Mondragó <small>zone protégée, calme (J6)</small></li>
+        <li>Caló des Moro <small>la beauté avant la faune (J6)</small></li>
+        <li>Cala Sa Nau <small>grotte sous-marine pour les aventureux (J7)</small></li>
+      </ol>
+    </div>
+  </div>
+  <div class="filters">
+    <label class="toggle"><input type="checkbox" id="only4"> N'afficher que les 4★ et plus</label>
+  </div>
+</section>
+
+<div id="days"></div>
+</main>
+
+<footer class="wrap">Tracés des cartes à vol d'oiseau, temps de trajet en voiture indicatifs. Prix et horaires à revérifier sur place.</footer>
+
+<div id="drawer" aria-hidden="true">
+  <div class="shade" data-close></div>
+  <aside class="sheet" role="dialog" aria-label="Ma sélection">
+    <h3>Ma sélection</h3>
+    <p class="sub" style="margin:0">Les activités cochées, jour par jour.</p>
+    <div id="selList"></div>
+    <div class="row">
+      <button class="btn primary" type="button" data-close>Fermer</button>
+      <button class="btn" type="button" id="clearSel">Tout décocher</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const DAYCOL={1:"#2563EB",2:"#DC2626",3:"#EA580C",4:"#16A34A",5:"#7C3AED",6:"#CA8A04",7:"#8C1D40",8:"#6B7280"};
+const P={ // coordonnées
+  aero:[39.5517,2.7388], ape:[39.5354,2.7159], soller:[39.7667,2.7150], santanyi:[39.3549,3.1277],
+  deia:[39.7479,2.6484], calaDeia:[39.7565,2.6425], marroig:[39.7513,2.6290], valldemossa:[39.7115,2.6226],
+  verger:[39.6790,2.5030], banyalbufar:[39.6873,2.5141], alfabia:[39.7353,2.7147], alluny:[39.7468,2.6507],
+  port:[39.7952,2.6975], catius:[39.8060,2.6870], biniaraix:[39.7709,2.7350], fornalutx:[39.7822,2.7410],
+  ecovin:[39.7701,2.7266], prunera:[39.7662,2.7160],
+  calobra:[39.8504,2.7996], lluc:[39.8225,2.8843], tuent:[39.8420,2.7800], barques:[39.8120,2.7340],
+  bellver:[39.5638,2.6194], seu:[39.5674,2.6483], catalina:[39.5720,2.6330], baluard:[39.5690,2.6400],
+  manacor:[39.5743,3.1572], moro:[39.3136,3.1214], pontas:[39.3262,3.1440], llombards:[39.3226,3.1378],
+  mondrago:[39.3523,3.1885], figuera:[39.3302,3.1686], calaSantanyi:[39.3290,3.1455],
+  varques:[39.4990,3.2945], salvador:[39.4555,3.1858], santueri:[39.4390,3.2030], felanitx:[39.4690,3.1480],
+  trenc:[39.3446,2.9846], calaPi:[39.3650,2.8390], drac:[39.5352,3.3302], saNau:[39.4210,3.2500]
+};
+const TOWNS=[["Palma",[39.585,2.655]],["Manacor",[39.570,3.209]],["Pollença",[39.877,3.016]],["Alcúdia",[39.853,3.121]],["Felanitx",[39.469,3.147]],["Llucmajor",[39.490,2.891]]];
+
+// item : [type, nom, description, note, durée, prix, clé coord, requête images, badge snorkeling]
+const DAYS=[
+ {n:1,date:"Mardi 6 octobre",theme:"Arrivée de nuit",base:"Sóller",
+  route:[["Aéroport","aero",true],["The Green Ape","ape"],["Sóller","soller",true]],legs:[8,40],
+  drive:"Aéroport → Green Ape 8 min · → Sóller 40 min",
+  groups:[{t:null,items:[
+   ["Arrivée","Atterrissage et voiture","Valise puis prise de la Clio TopGear, compter ~1h30 avant de rouler.",null,"~1h30","inclus","aero","Palma de Mallorca airport"],
+   ["CBD","The Green Ape, Can Pastilla","Social club ouvert jusqu'à 1h. Adhésion annuelle ~20 € en espèces.",null,"~20 min","~20 € adhésion","ape","Can Pastilla Mallorca"],
+   ["Arrivée","Check-in à Sóller","Check-in autonome vers 23h15. Prévoir de quoi manger, tout est fermé.",null,"","","soller","Sóller Mallorca night"]
+  ]}]},
+ {n:2,date:"Mercredi 7 octobre",theme:"Villages de la côte",base:"Sóller",
+  route:[["Sóller","soller",true],["Deià","deia"],["Son Marroig","marroig"],["Valldemossa","valldemossa"],["Torre del Verger","verger"],["Sóller","soller",true]],legs:[15,5,12,25,40],
+  drive:"Sóller → Deià 15 min · → Son Marroig 5 · → Valldemossa 12 · → Torre del Verger 25 · retour 40",
+  groups:[{t:null,items:[
+   ["Village","Valldemossa","Pierre dorée et chartreuse de Chopin, le village carte postale.",5,"~2h","chartreuse ~10 €","valldemossa","Valldemossa Mallorca"],
+   ["Village","Deià","Village d'artistes perché au-dessus de la mer, très romantique.",5,"~1h","gratuit","deia","Deià Mallorca village"],
+   ["Crique · snorkeling","Cala Deià","Crique de galets sous Deià. La pointe rocheuse nord concentre poulpes et poissons, très bonne visibilité.",4,"1–2h","gratuit","calaDeia","Cala Deià Mallorca","Snorkeling · n°1 nord"],
+   ["Visite","Son Marroig et Sa Foradada","Domaine de l'archiduc et rocher percé plongeant dans la mer.",4,"~45 min","~5 €","marroig","Son Marroig Sa Foradada"],
+   ["Point de vue","Torre del Verger","Tour de guet sur la falaise, le coucher de soleil de la côte ouest.",5,"~45 min","gratuit","verger","Torre del Verger Banyalbufar"],
+   ["Village","Banyalbufar","Terrasses de vigne face à la mer, arrêt café avant le coucher de soleil.",3.5,"~1h","gratuit","banyalbufar","Banyalbufar Mallorca"],
+   ["Jardins","Jardins d'Alfàbia","Jardins hispano-arabes à la sortie du tunnel de Sóller.",4,"~1h","~8 €","alfabia","Jardins d'Alfabia Mallorca"],
+   ["Musée","Ca n'Alluny, Deià","Maison-musée du poète Robert Graves.",3.5,"~1h","~9 €","alluny","Ca n'Alluny Deià Robert Graves"]
+  ]}]},
+ {n:3,date:"Jeudi 8 octobre",theme:"Vallée de Sóller et kayak",base:"Sóller",
+  route:[["Sóller","soller",true],["Port de Sóller","port"],["Biniaraix","biniaraix"],["Fornalutx","fornalutx"],["Sóller","soller",true]],legs:[10,15,8,10],
+  drive:"Sóller → Port de Sóller 10 min (ou tram) · → Biniaraix 15 · → Fornalutx 8 · retour 10",
+  groups:[
+   {t:"En mer, depuis Port de Sóller",items:[
+    ["Kayak guidé","Grottes et Cala Tuent","Le long des falaises jusqu'à l'îlot s'Illeta et la grotte du Vell Marí (500 m) où l'on pagaie. Débutants acceptés.",5,"~3h","~75 €/pers","port","kayak Port de Sóller cave"],
+    ["Kayak libre","Location Nautic Sóller","Criques et grottes à votre rythme le long de la côte.",4,"~3h30","~35 € / 2 pers","port","kayak Nautic Sóller"],
+    ["Snorkeling en kayak","Punta des Catius et s'Illeta","Fonds profonds : mérous, saupes, parfois raies et thons. Pas accessible depuis la plage, seulement en kayak.",4,"pendant le kayak","inclus","catius","Punta de sa Creu Port de Sóller","Snorkeling · n°3 nord"],
+    ["Snorkeling guidé","Sortie depuis Port de Sóller","Les plus belles baies de la Tramuntana avec un guide.",4,"2–3h","~45 €/pers","port","snorkeling Port de Sóller"],
+    ["Bateau","Speedboat vers Sa Calobra et Cala Tuent","Entrée dans une grotte, arrêts baignade, masques fournis.",4,"~2h","~55 €/pers","port","speedboat Port de Sóller Sa Calobra"]
+   ]},
+   {t:"Dans la vallée",items:[
+    ["Rando","Barranc de Biniaraix","Escaliers de pierre dans la gorge, la plus belle petite rando avec vue.",5,"2–3h","gratuit","biniaraix","Barranc de Biniaraix"],
+    ["Village","Fornalutx","Souvent élu plus beau village d'Espagne.",5,"~1h","gratuit","fornalutx","Fornalutx Mallorca"],
+    ["Transport","Tram en bois Sóller ↔ Port","Wagon vintage à travers les orangeraies.",4,"~30 min","~7 €","port","Tranvía de Sóller"],
+    ["Ferme","Ecovinyassa","Balade dans les orangers et jus frais. Matin seulement, fermé mardi, samedi et dimanche.",3.5,"~1h","~10 €","ecovin","Ecovinyassa Sóller"],
+    ["Plage","Port de Sóller","Baignade dans la baie et dîner face à la mer.",4,"libre","gratuit","port","Port de Sóller beach"],
+    ["Musée","Can Prunera","Maison Art nouveau, bonne option par temps gris.",3.5,"~1h","~7 €","prunera","Can Prunera Sóller"]
+   ]}
+  ]},
+ {n:4,date:"Vendredi 9 octobre",theme:"Grande journée montagne",base:"Sóller",
+  route:[["Sóller","soller",true],["Sa Calobra","calobra"],["Santuari de Lluc","lluc"],["Sóller","soller",true]],legs:[50,30,40],
+  drive:"Sóller → Sa Calobra 50 min · → Lluc 30 · retour 40 · la journée la plus conduite (~2h)",
+  groups:[{t:null,items:[
+   ["Route et gorge","Sa Calobra et Torrent de Pareis","La route en lacets mythique puis l'embouchure de la gorge, baignade au pied.",5,"2–3h","gratuit","calobra","Sa Calobra Torrent de Pareis"],
+   ["Crique · snorkeling","Cala Tuent","Crique calme à côté de Sa Calobra, visibilité exceptionnelle par mer calme.",4,"1–2h","gratuit","tuent","Cala Tuent Mallorca","Snorkeling · n°2 nord"],
+   ["Monastère","Santuari de Lluc","Monastère de montagne, jardin botanique, déjeuner.",4,"~1h30","parking ~8 €","lluc","Santuari de Lluc"],
+   ["Point de vue","Mirador de Ses Barques","Vue plongeante sur Port de Sóller, sur la route.",4,"~20 min","gratuit","barques","Mirador de Ses Barques"],
+   ["Bateau","Retour Sa Calobra → Port de Sóller","Évite de refaire les lacets, belle vue sur la côte.",4,"~30 min","~30 €/pers","calobra","boat Sa Calobra Port de Sóller"],
+   ["Rando technique","Traversée du Torrent de Pareis","Désescalade, dangereux si humide. Seulement pour randonneurs aguerris et par temps sec.",2,"4–6h","gratuit","calobra","Torrent de Pareis hike"]
+  ]}]},
+ {n:5,date:"Samedi 10 octobre",theme:"Transfert par Palma",base:"Sóller → Santanyí",
+  route:[["Sóller","soller",true],["Castell de Bellver","bellver"],["La Seu","seu"],["Santanyí","santanyi",true]],legs:[35,10,50],
+  drive:"Sóller → Bellver 35 min · → La Seu 10 · → Santanyí 50",
+  groups:[{t:null,items:[
+   ["Visite","La Seu et Casco Antiguo","La cathédrale gothique et la vieille ville. Ferme à 14h15 le samedi : y aller le matin.",5,"~2h","~10 €","seu","La Seu Palma cathedral"],
+   ["Château","Castell de Bellver","Château circulaire unique, vue sur toute la baie.",4,"~1h","~4 €","bellver","Castell de Bellver"],
+   ["Quartier","Santa Catalina","Le quartier des bonnes tables, pour déjeuner.",4,"1–2h","restaurant","catalina","Santa Catalina Palma"],
+   ["Apéro","Rooftop à Palma","Nakar, Sant Francesc ou Sky Saratoga, sur les toits.",4,"~1h","conso","seu","Palma rooftop bar"],
+   ["Musée","Es Baluard","Art moderne sur les remparts, belle terrasse.",3.5,"~1h","~6 €","baluard","Es Baluard Palma"],
+   ["Baignade","Premier bain au sud","Cala Santanyí ou Caló des Moro en fin de journée.",4,"libre","gratuit","calaSantanyi","Cala Santanyí"]
+  ]}]},
+ {n:6,date:"Dimanche 11 octobre",theme:"Montgolfière et criques du sud",base:"Santanyí",
+  route:[["Santanyí","santanyi",true],["Montgolfière","manacor"],["Caló des Moro","moro"],["Es Pontàs","pontas"],["Cala Llombards","llombards"],["Santanyí","santanyi",true]],legs:[40,45,10,5,12],
+  drive:"Santanyí → envol 40 min (aube) · → Caló des Moro 45 · → Es Pontàs 10 · → Cala Llombards 5 · retour 12",
+  groups:[
+   {t:"À l'aube, sur réservation",items:[
+    ["Montgolfière","Vol au lever du soleil","Lumière d'aube et Tramuntana à l'horizon. Selon la météo. Opérateur du dimanche à confirmer.",4,"~1h de vol (3–4h)","~187 €/pers","manacor","hot air balloon Mallorca sunrise"]
+   ]},
+   {t:"Les criques",items:[
+    ["Crique · snorkeling","Cala Llombards","Faune riche dès le bord, eau très claire, petite grotte bleue côté droit. Accès et parking simples.",4,"~2h","parking payant","llombards","Cala Llombards","Snorkeling · n°2 sud"],
+    ["Criques · snorkeling","Parc de Mondragó","Zone protégée sans mouillage, têtes rocheuses pleines de sars et de poulpes. Le plus facile et calme.",4,"2–3h","parking","mondrago","Cala Mondragó","Snorkeling · n°3 sud"],
+    ["Crique · snorkeling","Caló des Moro","La crique turquoise iconique. Bancs de poissons vers le large, escalier raide, aucun service. Y aller tôt.",5,"1–2h","gratuit","moro","Caló des Moro Santanyí","Snorkeling · n°4 sud"],
+    ["Point de vue","Es Pontàs","L'arche rocheuse dans la mer, superbe au coucher.",4,"~30 min","gratuit","pontas","Es Pontàs Santanyí"],
+    ["Port de pêche","Cala Figuera","Port encore en activité, magique au coucher de soleil.",4,"~1h","gratuit","figuera","Cala Figuera Santanyí"],
+    ["Village","Santanyí","Grès doré, galeries, marché le mercredi et le samedi.",3.5,"~1h","gratuit","santanyi","Santanyí Mallorca town"],
+    ["Crique","Cala Santanyí","Accès facile tout près de la base, repli si la mer se lève ailleurs.",3.5,"1–2h","parking","calaSantanyi","Cala Santanyí"]
+   ]}
+  ]},
+ {n:7,date:"Lundi 12 octobre",theme:"Kayak et intérieur",base:"Santanyí",
+  route:[["Santanyí","santanyi",true],["Cala Varques","varques"],["Sant Salvador","salvador"],["Santanyí","santanyi",true]],legs:[40,25,30],
+  drive:"Santanyí → Cala Varques 40 min · → Sant Salvador 25 · retour 30 · Es Trenc 35 · Coves del Drac 45",
+  groups:[
+   {t:"En mer, côté sud",items:[
+    ["Kayak guidé","Cala Varques et grottes marines","Crique sauvage, grottes à explorer, snorkeling inclus. Accès à pied 20–30 min.",5,"~3h","~60–70 €/pers","varques","Cala Varques kayak cave","Snorkeling · n°1 sud"],
+    ["Aventure","Coasteering","Sauts, nage et escalade sur les falaises, la version sportive.",4,"~3h","~60 €/pers","varques","coasteering Mallorca"],
+    ["Crique","Cala Varques sans guide","Snorkeling depuis le bord si vous voulez la crique sans l'excursion.",4,"libre","gratuit","varques","Cala Varques Mallorca"],
+    ["Crique · snorkeling","Cala Sa Nau","Mini-fjord protégé, grande grotte sous-marine à ~300 m le long de la paroi sud.",4,"1–2h","parking","saNau","Cala Sa Nau Mallorca","Snorkeling · n°5 sud"]
+   ]},
+   {t:"Intérieur",items:[
+    ["Monastère","Sant Salvador, Felanitx","Monastère perché, panorama à 360°, pile sur le retour.",4,"~1h","gratuit","salvador","Santuari de Sant Salvador Felanitx"],
+    ["Château","Castell de Santueri","Forteresse en ruine perchée près de Felanitx.",4,"~45 min","~4 €","santueri","Castell de Santueri"],
+    ["Dégustation","Bodega à Felanitx","Cave locale et vins du coin.",3.5,"1–2h","~15 €","felanitx","bodega Felanitx"]
+   ]},
+   {t:"Pour varier",items:[
+    ["Grande plage","Es Trenc","Longue plage de sable blanc à l'ouest.",4,"2–3h","parking","trenc","Es Trenc beach"],
+    ["Crique","Cala Pi","Crique étroite et spectaculaire avec ses cabanes de pêcheurs.",4,"1–2h","gratuit","calaPi","Cala Pi Mallorca"],
+    ["Grotte","Coves del Drac","Grotte et lac souterrain avec concert. Option temps gris.",4,"~1h","~16 €","drac","Coves del Drac"]
+   ]}
+  ]},
+ {n:8,date:"Mardi 13 octobre",theme:"Départ",base:"Santanyí → aéroport",
+  route:[["Santanyí","santanyi",true],["Aéroport","aero",true]],legs:[50],
+  drive:"Santanyí → aéroport ~50 min",
+  groups:[{t:null,items:[
+   ["Baignade","Dernier bain","Cala Llombards ou Caló des Moro, tout près de la base.",4,"matinée","gratuit","llombards","Cala Llombards"],
+   ["Sur la route","Es Trenc","Sur l'axe de l'aéroport si vous partez tôt. Serré mais jouable.",4,"~1h","parking","trenc","Es Trenc"],
+   ["Départ","Plein et rendu voiture","Quitter Santanyí ~13h15, plein en route, rendu à 14h30, vol à 15h45.",null,"","","aero","Palma airport"]
+  ]}]}
+];
+
+const MUST=[
+ ["Sa Calobra et Torrent de Pareis","La route en lacets et la gorge",4],
+ ["Valldemossa et Deià","Les villages de pierre de la Tramuntana",2],
+ ["Torre del Verger au coucher","Le plus beau mirador de la côte ouest",2],
+ ["Une sortie kayak dans les grottes","Port de Sóller ou Cala Varques",3],
+ ["Barranc de Biniaraix","La rando avec vue de la vallée",3],
+ ["La Seu et la vieille ville","Palma sur la route du sud",5],
+ ["Caló des Moro","La crique turquoise iconique",6],
+ ["Montgolfière à l'aube","Si le budget et la météo suivent",6]
+];
+
+/* ================= STORAGE ================= */
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let picked=new Set(store.get("mj-picked",[]));
+
+/* ================= HELPERS ================= */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function stars(r){
+  if(r==null) return "";
+  const f=Math.floor(r),h=(r-f)>=.5?1:0,e=5-f-h;
+  return `<span aria-label="${r} sur 5">${"★".repeat(f)}${h?'<span class="h">★</span>':""}<span class="e">${"★".repeat(e)}</span></span>`;
+}
+function mix(a,b,t){const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16));const A=p(a),B=p(b);return "#"+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,"0")).join("")}
+const gImg=q=>"https://www.google.com/search?tbm=isch&q="+encodeURIComponent(q+" Mallorca");
+const gDir=ll=>`https://www.google.com/maps/dir/?api=1&destination=${ll[0]},${ll[1]}`;
+const TILE="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}";
+const ATTR="Tiles © Esri";
+
+/* ================= RENDER DAYS ================= */
+const daysEl=document.getElementById("days"), nav=document.getElementById("navwrap"), sp=nav.querySelector(".sp");
+DAYS.forEach(d=>{
+  const a=document.createElement("a"); a.href="#j"+d.n; a.textContent="J"+d.n; a.dataset.day=d.n; nav.insertBefore(a,sp);
+  let html=`<section class="day wrap" id="j${d.n}">
+   <div class="dayhead"><div class="daynum">J${d.n}</div><div><p class="date">${d.date}</p><h2>${esc(d.theme)}</h2></div></div>
+   <div class="drive"><span><b>Base</b> ${esc(d.base)}</span><span><b>En voiture</b> ${esc(d.drive)}</span></div>
+   <div class="daygrid"><div class="mapbox"><div class="daymap" id="map${d.n}" role="region" aria-label="Carte du jour ${d.n}"></div>
+   <p class="mapnote">Numéros = ordre suggéré, du clair au foncé. Petits points = autres options du jour. Touche une activité pour la situer.</p></div><div>`;
+  d.groups.forEach((g,gi)=>{
+    html+=`<div class="group">${g.t?`<h4>${esc(g.t)}</h4>`:""}`;
+    g.items.forEach((it,ii)=>{
+      const [type,name,desc,r,du,pr,key,q,snk]=it, id=`d${d.n}-${gi}-${ii}`;
+      const ll=P[key];
+      html+=`<div class="act${picked.has(id)?" picked":""}" data-id="${id}" data-r="${r??5}" data-day="${d.n}" data-key="${key}">
+        <input type="checkbox" aria-label="Garder ${esc(name)}" ${picked.has(id)?"checked":""}>
+        <div><div class="top"><span class="name" tabindex="0" role="button">${esc(name)}</span><span class="type">${esc(type)}</span>${snk?`<span class="snk">${esc(snk)}</span>`:""}</div>
+        <p>${esc(desc)}</p>
+        <div class="meta">${du?`<span>${esc(du)}</span>`:""}${pr?`<span>${esc(pr)}</span>`:""}<a href="${gImg(q)}" target="_blank" rel="noopener">Photos</a>${ll?`<a href="${gDir(ll)}" target="_blank" rel="noopener">Y aller</a>`:""}</div></div>
+        <div class="stars">${stars(r)}</div></div>`;
+    });
+    html+=`</div>`;
+  });
+  html+=`</div></div></section>`;
+  daysEl.insertAdjacentHTML("beforeend",html);
+});
+
+/* ================= MAPS ================= */
+function baseMap(el,opts){
+  const m=L.map(el,Object.assign({scrollWheelZoom:false,zoomControl:true},opts||{}));
+  L.tileLayer(TILE,{attribution:ATTR,maxZoom:17}).addTo(m);
+  return m;
+}
+function addTowns(m){TOWNS.forEach(([n,ll])=>L.marker(ll,{icon:L.divIcon({className:"",html:`<div class="town">${n}</div>`,iconSize:[0,0]}),interactive:false,keyboard:false}).addTo(m))}
+const homeIcon=()=>L.divIcon({className:"",html:'<div class="pin home">⌂</div>',iconSize:[26,26],iconAnchor:[13,13]});
+
+// Overview
+const ov=baseMap("overview-map");
+addTowns(ov);
+const ovPts=[];
+DAYS.forEach(d=>{
+  const seen=new Set();
+  d.groups.forEach(g=>g.items.forEach(it=>{
+    const key=it[6]; if(!P[key]||seen.has(key)||key==="soller"||key==="santanyi") return; seen.add(key);
+    const mk=L.marker(P[key],{icon:L.divIcon({className:"",html:`<div class="dot" style="background:${DAYCOL[d.n]}"></div>`,iconSize:[12,12],iconAnchor:[6,6]})})
+      .bindPopup(`<b>${esc(it[1])}</b><br>J${d.n} · ${esc(d.theme)}<br><a href="#j${d.n}">Voir la journée</a>`).addTo(ov);
+    ovPts.push(P[key]);
+  }));
+});
+[["Sóller · base 1","soller"],["Santanyí · base 2","santanyi"]].forEach(([n,k])=>L.marker(P[k],{icon:homeIcon(),zIndexOffset:1000}).bindPopup(`<b>${n}</b>`).addTo(ov));
+ov.fitBounds(L.latLngBounds(ovPts).pad(.06));
+
+// Legend + must-sees
+const leg=document.getElementById("legend");
+DAYS.forEach(d=>leg.insertAdjacentHTML("beforeend",`<a href="#j${d.n}"><i style="background:${DAYCOL[d.n]}"></i>J${d.n} ${esc(d.theme)}</a>`));
+const mu=document.getElementById("must");
+MUST.forEach(([n,s,day])=>mu.insertAdjacentHTML("beforeend",`<li><i style="background:${DAYCOL[day]}"></i><div><a href="#j${day}" style="color:inherit;text-decoration:none;font-weight:500">${esc(n)}</a><small>J${day} · ${esc(s)}</small></div></li>`));
+
+// Day maps (lazy)
+const dayMaps={}, dayMarkers={};
+function buildDayMap(d){
+  const m=baseMap("map"+d.n); dayMaps[d.n]=m; dayMarkers[d.n]={};
+  addTowns(m);
+  const stops=d.route, inner=stops.filter(s=>!s[2]).length;
+  const colorAt=i=>mix("#F0B48F","#6E240E",inner<=1?1:i/(inner-1));
+  let k=0; const cols=stops.map(s=>s[2]?null:colorAt(k++));
+  const bounds=[];
+  // legs
+  for(let i=0;i<stops.length-1;i++){
+    const a=P[stops[i][1]],b=P[stops[i+1][1]]; if(!a||!b) continue;
+    const c=cols[i+1]||cols[i]||"#6E240E";
+    L.polyline([a,b],{color:c,weight:4,opacity:.9}).addTo(m);
+    if(d.legs[i]) L.marker([(a[0]+b[0])/2,(a[1]+b[1])/2],{icon:L.divIcon({className:"",html:`<div class="leg">${d.legs[i]} min</div>`,iconSize:[0,0]}),interactive:false,keyboard:false,zIndexOffset:500}).addTo(m);
+  }
+  // other options (small dots)
+  const routeKeys=new Set(stops.map(s=>s[1]));
+  d.groups.forEach(g=>g.items.forEach(it=>{
+    const key=it[6]; if(!P[key]) return; bounds.push(P[key]);
+    if(routeKeys.has(key)||dayMarkers[d.n][key]) return;
+    dayMarkers[d.n][key]=L.marker(P[key],{icon:L.divIcon({className:"",html:'<div class="dot" style="background:#9A8F84"></div>',iconSize:[12,12],iconAnchor:[6,6]})}).bindPopup(`<b>${esc(it[1])}</b><br>${esc(it[0])}`).addTo(m);
+  }));
+  // route stops
+  let num=0;
+  stops.forEach((s,i)=>{
+    const ll=P[s[1]]; bounds.push(ll);
+    if(dayMarkers[d.n][s[1]]&&!s[2]) return;
+    const icon=s[2]?homeIcon():L.divIcon({className:"",html:`<div class="pin" style="background:${cols[i]}">${++num}</div>`,iconSize:[26,26],iconAnchor:[13,13]});
+    dayMarkers[d.n][s[1]]=L.marker(ll,{icon,zIndexOffset:s[2]?900:800}).bindPopup(`<b>${esc(s[0])}</b>`).addTo(m);
+  });
+  m.fitBounds(L.latLngBounds(bounds).pad(.12));
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  const n=+e.target.id.replace("map",""); if(!dayMaps[n]) buildDayMap(DAYS.find(d=>d.n===n));
+  io.unobserve(e.target);
+}),{rootMargin:"300px"});
+DAYS.forEach(d=>io.observe(document.getElementById("map"+d.n)));
+
+/* ================= INTERACTIONS ================= */
+function focusAct(row){
+  const n=+row.dataset.day,key=row.dataset.key; if(!P[key]) return;
+  const d=DAYS.find(x=>x.n===n); if(!dayMaps[n]) buildDayMap(d);
+  const m=dayMaps[n]; const mk=dayMarkers[n][key];
+  const box=document.getElementById("map"+n).getBoundingClientRect();
+  if(box.top<0||box.bottom>innerHeight) document.getElementById("map"+n).scrollIntoView({block:"center"});
+  m.flyTo(P[key],Math.max(m.getZoom(),13),{duration:.6});
+  if(mk) setTimeout(()=>mk.openPopup(),650);
+}
+daysEl.addEventListener("click",e=>{
+  const row=e.target.closest(".act"); if(!row) return;
+  if(e.target.matches('input[type="checkbox"]')){
+    const id=row.dataset.id; e.target.checked?picked.add(id):picked.delete(id);
+    row.classList.toggle("picked",e.target.checked); store.set("mj-picked",[...picked]); updateSel(); return;
+  }
+  if(e.target.closest(".name")) focusAct(row);
+});
+daysEl.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches(".name")){e.preventDefault();focusAct(e.target.closest(".act"))}});
+
+// Star filter
+const only4=document.getElementById("only4");
+only4.checked=store.get("mj-only4",false);
+function applyFilter(){document.querySelectorAll(".act").forEach(r=>r.classList.toggle("dim",only4.checked&&+r.dataset.r<4));store.set("mj-only4",only4.checked)}
+only4.addEventListener("change",applyFilter); applyFilter();
+
+// Checklists
+document.querySelectorAll(".checks[data-store]").forEach(ul=>{
+  const k="mj-"+ul.dataset.store, st=store.get(k,{});
+  ul.querySelectorAll("input").forEach(i=>{i.checked=!!st[i.dataset.k];i.addEventListener("change",()=>{st[i.dataset.k]=i.checked;store.set(k,st)})});
+});
+
+// Selection drawer
+const drawer=document.getElementById("drawer"), selBtn=document.getElementById("selBtn"), selList=document.getElementById("selList");
+function updateSel(){
+  selBtn.textContent=`Ma sélection (${picked.size})`;
+  let h="";
+  DAYS.forEach(d=>{
+    const rows=[...document.querySelectorAll(`.act[data-day="${d.n}"]`)].filter(r=>picked.has(r.dataset.id));
+    if(!rows.length) return;
+    h+=`<div class="dday">J${d.n} · ${esc(d.theme)}</div><ul>`+rows.map(r=>`<li><a href="#j${d.n}" data-close>${esc(r.querySelector(".name").textContent)}</a></li>`).join("")+"</ul>";
+  });
+  selList.innerHTML=h||'<p style="font-size:14px;color:var(--mut);margin-top:18px">Rien de coché pour l\'instant. Coche les activités qui te tentent dans chaque journée.</p>';
+}
+selBtn.addEventListener("click",()=>{updateSel();drawer.classList.add("open");drawer.setAttribute("aria-hidden","false")});
+drawer.addEventListener("click",e=>{if(e.target.closest("[data-close]")){drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")drawer.classList.remove("open")});
+document.getElementById("clearSel").addEventListener("click",()=>{
+  picked.clear(); store.set("mj-picked",[]);
+  document.querySelectorAll(".act").forEach(r=>{r.classList.remove("picked");r.querySelector("input").checked=false}); updateSel();
+});
+updateSel();
+
+// Active day in nav
+const navLinks=[...nav.querySelectorAll("a")];
+const so=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  navLinks.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id));
+  const on=nav.querySelector("a.on"); if(on) nav.scrollTo({left:on.offsetLeft-nav.clientWidth/2+on.offsetWidth/2,behavior:"smooth"});
+}),{rootMargin:"-45% 0px -50% 0px"});
+document.querySelectorAll("#apercu,#pratique,section.day").forEach(s=>so.observe(s));
+</script>
+</body>
+</html>
